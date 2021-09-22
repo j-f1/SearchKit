@@ -15,7 +15,7 @@ public class Summary {
         SKSummaryCopyParagraphSummaryString(summary, maxParagraphs).takeRetainedValue() as String
     }
 
-    public var sentenceCount: CFIndex { SKSummaryGetSentenceCount(summary) }
+    public private(set) lazy var sentenceCount: Int = SKSummaryGetSentenceCount(summary)
 
     public private(set) lazy var sentences: [Sentence] = {
         var rankOrders = Array<CFIndex>(repeating: 0, count: sentenceCount)
@@ -39,19 +39,15 @@ public class Summary {
         let paragraphIndex: CFIndex
         unowned let summary: Summary
 
-        public var content: String {
-            SKSummaryCopySentenceAtIndex(summary.summary, index).takeRetainedValue() as String
-        }
-
-        public var paragraph: Paragraph {
-            summary.paragraphs[paragraphIndex]
-        }
+        public private(set) lazy var content = SKSummaryCopySentenceAtIndex(summary.summary, index).takeRetainedValue() as String
+        public private(set) lazy var paragraph = summary.paragraphs[paragraphIndex]
     }
 
+    public private(set) lazy var paragraphCount: Int = SKSummaryGetParagraphCount(summary)
     public private(set) lazy var paragraphs: [Paragraph] = {
-        var rankOrders = Array<CFIndex>(repeating: 0, count: sentenceCount)
-        var paragraphIndices = Array<CFIndex>(repeating: 0, count: sentenceCount)
-        SKSummaryGetParagraphSummaryInfo(summary, sentenceCount, &rankOrders, &paragraphIndices)
+        var rankOrders = Array<CFIndex>(repeating: 0, count: paragraphCount)
+        var paragraphIndices = Array<CFIndex>(repeating: 0, count: paragraphCount)
+        SKSummaryGetParagraphSummaryInfo(summary, paragraphCount, &rankOrders, &paragraphIndices)
         return rankOrders.enumerated().map {
             Paragraph(rankOrder: $0.element, index: paragraphIndices[$0.offset], summary: self)
         }
@@ -63,8 +59,6 @@ public class Summary {
         let index: CFIndex
         unowned let summary: Summary
 
-        public var content: String {
-            SKSummaryCopyParagraphAtIndex(summary.summary, index).takeRetainedValue() as String
-        }
+        public private(set) lazy var content = SKSummaryCopyParagraphAtIndex(summary.summary, index).takeRetainedValue() as String
     }
 }
