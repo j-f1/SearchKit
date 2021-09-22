@@ -3,15 +3,15 @@ import Foundation
 
 public class Summary {
     public let summary: SKSummary
-    init(_ string: String) {
+    public init(_ string: String) {
         summary = SKSummaryCreateWithString(string as NSString).takeRetainedValue()
     }
 
-    func summarize(maxSentences: Int) -> String {
+    public func summarize(maxSentences: Int) -> String {
         SKSummaryCopySentenceSummaryString(summary, maxSentences).takeRetainedValue() as String
     }
 
-    func summarize(maxParagraphs: Int) -> String {
+    public func summarize(maxParagraphs: Int) -> String {
         SKSummaryCopyParagraphSummaryString(summary, maxParagraphs).takeRetainedValue() as String
     }
 
