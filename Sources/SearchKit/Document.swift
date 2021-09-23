@@ -38,24 +38,62 @@ public class Document {
 }
 
 public class BoundDocument: Document {
-    internal let index: WriteableIndex
+    internal let index: Index
 
-    init(index: WriteableIndex, document: SKDocument) {
+    internal init?(index: Index, retainedDocument document: Unmanaged<SKDocument>?) {
         self.index = index
-        super.init(document)
+        super.init(retained: document)
+    }
+
+    public private(set) lazy var id = SKIndexGetDocumentID(index.index, document)
+
+    public var terms: [Term] {
+        (SKIndexCopyTermIDArrayForDocumentID(index.index, id).takeRetainedValue() as! [CFNumber]).map {
+            Term(index: index, id: ($0 as NSNumber).intValue)
+        }
+    }
+
+    public var properties: CFDictionary? {
+        SKIndexCopyDocumentProperties(index.index, document)?.takeRetainedValue()
+    }
+
+    public var state: SKDocumentIndexState {
+        SKIndexGetDocumentState(index.index, document)
+    }
+
+    public var termCount: Int {
+        SKIndexGetDocumentTermCount(index.index, id)
+    }
+
+    public func numberOfOccurrences(of term: Term) -> Int {
+        SKIndexGetDocumentTermFrequency(index.index, id, term.id)
+    }
+}
+
+public class MutableBoundDocument: BoundDocument {
+    internal let writableIndex: WriteableIndex
+
+    internal init?(index: WriteableIndex, retainedDocument document: Unmanaged<SKDocument>?) {
+        self.writableIndex = index
+        super.init(index: index, retainedDocument: document)
     }
 
     public override var name: String? {
         get { super.name }
-        set { _ = index.rename(self, name: newValue!) }
+        set { _ = writableIndex.rename(self, name: newValue!) }
     }
 
     public override var parent: Document? {
         get { super.parent }
-        set { _ = index.move(self, to: newValue) }
+        set { _ = writableIndex.move(self, to: newValue) }
+    }
+
+    public override var properties: CFDictionary? {
+        get { super.properties }
+        set { SKIndexSetDocumentProperties(index.index, document, newValue) }
     }
 
     public func removeFromIndex() -> Bool {
-        index.remove(self)
+        writableIndex.remove(self)
     }
 }

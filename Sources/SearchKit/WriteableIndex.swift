@@ -78,12 +78,18 @@ class WriteableIndex: Index {
         }
 
         public override func next() -> BoundDocument? {
-            if let document = SKIndexDocumentIteratorCopyNext(iterator)?.takeRetainedValue() {
-                return BoundDocument(index: index, document: document)
-            } else {
-                return nil
-            }
+            BoundDocument(index: index, retainedDocument: SKIndexDocumentIteratorCopyNext(iterator))
         }
+    }
+
+    public override subscript(document id: SKDocumentID) -> BoundDocument? {
+        BoundDocument(index: self, retainedDocument: SKIndexCopyDocumentForDocumentID(index, id))
+    }
+
+    // Unimplemented: wrappers for SKIndexCopyDocument*ForDocumentIDs
+
+    public func documents(containing term: Term) -> [SKDocumentID] {
+        SKIndexCopyDocumentIDArrayForTermID(index, term.id).takeRetainedValue() as! [SKDocumentID]
     }
 }
 

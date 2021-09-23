@@ -8,21 +8,7 @@
 import CoreServices
 import Foundation
 
-public extension SKIndexType {
-    /// Specifies an unknown index type.
-    static let unknown = kSKIndexUnknown
-
-    /// Specifies an inverted index, mapping terms to documents.
-    static let inverted = kSKIndexInverted
-
-    /// Vector index, mapping documents to terms.
-    static let vector = kSKIndexVector
-
-    /// Index type with all the capabilities of an inverted and a vector index.
-    static let invertedVector = kSKIndexInvertedVector
-}
-
-class Index {
+public class Index {
     public let index: SKIndex
 
     public private(set) lazy var type = SKIndexGetIndexType(index)
@@ -72,5 +58,13 @@ class Index {
 
     public var analysisProperties: [AnalysisProperty] {
         (SKIndexGetAnalysisProperties(index).takeUnretainedValue() as! [CFString: AnyObject]).compactMap(AnalysisProperty.init)
+    }
+
+    public subscript(document id: SKDocumentID) -> Document? {
+        Document(retained: SKIndexCopyDocumentForDocumentID(index, id))
+    }
+
+    public func numberOfDocuments(containing term: Term) -> Int {
+        SKIndexGetTermDocumentCount(index, term.id)
     }
 }
