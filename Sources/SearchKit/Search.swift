@@ -39,7 +39,7 @@ public class Search {
     }
 
     public func findAll(maximumTime: TimeInterval = 0) -> [Match] {
-        var done = true
+        var done = false
         var matches = [Match]()
         while !done {
             let (newMatches, hasMore) = findMatches(maximumTime: maximumTime)
