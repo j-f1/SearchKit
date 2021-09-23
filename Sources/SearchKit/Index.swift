@@ -5,7 +5,7 @@
 //  Created by Jed Fox on 9/22/21.
 //
 
-import CoreServices
+import CoreServices.SearchKit
 import Foundation
 
 public class Index {

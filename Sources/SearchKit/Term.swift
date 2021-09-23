@@ -5,7 +5,7 @@
 //  Created by Jed Fox on 9/23/21.
 //
 
-import CoreServices
+import CoreServices.SearchKit
 
 public struct Term {
     public let index: Index

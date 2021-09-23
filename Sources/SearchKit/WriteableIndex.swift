@@ -5,6 +5,7 @@
 //  Created by Jed Fox on 9/23/21.
 //
 
+import CoreServices.SearchKit
 import Foundation
 
 class WriteableIndex: Index {

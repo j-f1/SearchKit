@@ -5,7 +5,7 @@
 //  Created by Jed Fox on 9/23/21.
 //
 
-import Foundation
+import CoreServices.SearchKit
 
 public extension SKIndexType {
     /// Specifies an unknown index type.

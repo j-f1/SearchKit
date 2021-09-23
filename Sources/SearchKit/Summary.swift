@@ -1,4 +1,4 @@
-import CoreServices
+import CoreServices.SearchKit
 import Foundation
 
 public class Summary {
