@@ -60,8 +60,8 @@ public class Index {
         (SKIndexGetAnalysisProperties(index).takeUnretainedValue() as! [CFString: AnyObject]).compactMap(AnalysisProperty.init)
     }
 
-    public subscript(document id: SKDocumentID) -> Document? {
-        Document(retained: SKIndexCopyDocumentForDocumentID(index, id))
+    public subscript(document id: SKDocumentID) -> BoundDocument? {
+        BoundDocument(index: self, id: id)
     }
 
     public func numberOfDocuments(containing term: Term) -> Int {

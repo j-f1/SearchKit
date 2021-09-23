@@ -21,7 +21,7 @@ public class Search {
         SKSearchCancel(search)
     }
 
-    public typealias Match = (id: SKDocumentID, score: Float)
+    public typealias Match = (id: Document, score: Float)
 
     public func findMatches(maximumCount: Int = 0, maximumTime: TimeInterval) -> (matches: [Match], hasMore: Bool) {
         let count = maximumCount == 0 ? index.documentCount : maximumCount
@@ -29,7 +29,13 @@ public class Search {
         var scores = Array<Float>(repeating: 0, count: count)
         var foundCount = 0
         let hasMore = SKSearchFindMatches(search, maximumCount, &documentIDs, &scores, maximumTime, &foundCount)
-        return (Array(zip(documentIDs.prefix(foundCount), scores.prefix(foundCount))), hasMore)
+        return (
+            matches: Array(zip(
+                documentIDs.prefix(foundCount).map { BoundDocument(index: index, id: $0) },
+                scores.prefix(foundCount)
+            )),
+            hasMore: hasMore
+        )
     }
 
     public func findAll(maximumTime: TimeInterval = 0) -> [Match] {

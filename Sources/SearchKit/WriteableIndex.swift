@@ -77,13 +77,13 @@ class WriteableIndex: Index {
             super.init(index: index, document: document)
         }
 
-        public override func next() -> BoundDocument? {
-            BoundDocument(index: index, retainedDocument: SKIndexDocumentIteratorCopyNext(iterator))
+        public override func next() -> MutableBoundDocument? {
+            MutableBoundDocument(index: index, retainedDocument: SKIndexDocumentIteratorCopyNext(iterator))
         }
     }
 
-    public override subscript(document id: SKDocumentID) -> BoundDocument? {
-        BoundDocument(index: self, retainedDocument: SKIndexCopyDocumentForDocumentID(index, id))
+    public override subscript(document id: SKDocumentID) -> MutableBoundDocument? {
+        MutableBoundDocument(index: self, id: id)
     }
 
     // Unimplemented: wrappers for SKIndexCopyDocument*ForDocumentIDs

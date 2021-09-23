@@ -9,7 +9,14 @@ import CoreServices
 import Foundation
 
 public class Document {
-    public let document: SKDocument
+    public var document: SKDocument { storage }
+    private let storage: SKDocument!
+    internal init(_ document: SKDocument) {
+        storage = document
+    }
+    fileprivate init() {
+        storage = nil
+    }
 
     public convenience init?(_ url: URL) {
         self.init(retained: SKDocumentCreateWithURL(url as CFURL))
@@ -27,10 +34,6 @@ public class Document {
         }
     }
 
-    internal init(_ document: SKDocument) {
-        self.document = document
-    }
-
     var url: URL? { SKDocumentCopyURL(document).takeRetainedValue() as URL? }
     var scheme: String? { SKDocumentGetSchemeName(document).takeUnretainedValue() as String? }
     var name: String? { SKDocumentGetName(document).takeUnretainedValue() as String? }
@@ -40,9 +43,37 @@ public class Document {
 public class BoundDocument: Document {
     internal let index: Index
 
+    public override var document: SKDocument {
+        get {
+            switch storage {
+            case .id(let id):
+                let document = SKIndexCopyDocumentForDocumentID(index.index, id).takeRetainedValue()
+                storage = .document(document)
+                return document
+            case .document(let document): return document
+            }
+        }
+        set {}
+    }
+
+    private var storage: Storage
+    private enum Storage {
+        case id(SKDocumentID)
+        case document(SKDocument)
+    }
+
     internal init?(index: Index, retainedDocument document: Unmanaged<SKDocument>?) {
         self.index = index
-        super.init(retained: document)
+        guard let document = document?.takeRetainedValue() else { return nil }
+        self.storage = .document(document)
+        super.init(document)
+    }
+
+    internal init(index: Index, id: SKDocumentID) {
+        self.index = index
+        self.storage = .id(id)
+        super.init()
+        self.id = id
     }
 
     public private(set) lazy var id = SKIndexGetDocumentID(index.index, document)
@@ -76,6 +107,11 @@ public class MutableBoundDocument: BoundDocument {
     internal init?(index: WriteableIndex, retainedDocument document: Unmanaged<SKDocument>?) {
         self.writableIndex = index
         super.init(index: index, retainedDocument: document)
+    }
+
+    internal init(index: WriteableIndex, id: SKDocumentID) {
+        self.writableIndex = index
+        super.init(index: index, id: id)
     }
 
     public override var name: String? {
