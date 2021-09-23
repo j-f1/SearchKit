@@ -34,10 +34,10 @@ public class Document {
         }
     }
 
-    var url: URL? { SKDocumentCopyURL(document).takeRetainedValue() as URL? }
-    var scheme: String? { SKDocumentGetSchemeName(document).takeUnretainedValue() as String? }
-    var name: String? { SKDocumentGetName(document).takeUnretainedValue() as String? }
-    var parent: Document? { (SKDocumentGetParent(document)?.takeUnretainedValue()).map(Document.init) }
+    public var url: URL? { SKDocumentCopyURL(document)?.takeRetainedValue() as URL? }
+    public var scheme: String? { SKDocumentGetSchemeName(document)?.takeUnretainedValue() as String? }
+    public var name: String? { SKDocumentGetName(document)?.takeUnretainedValue() as String? }
+    public var parent: Document? { (SKDocumentGetParent(document)?.takeUnretainedValue()).map(Document.init) }
 }
 
 public class BoundDocument: Document {

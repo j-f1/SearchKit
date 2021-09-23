@@ -10,9 +10,7 @@ import CoreServices.SearchKit
 public struct Term {
     public let index: Index
     public let id: CFIndex
-    public private(set) lazy var value = {
-        SKIndexCopyTermStringForTermID(index.index, id).takeRetainedValue() as String
-    }()
+    public private(set) lazy var value = SKIndexCopyTermStringForTermID(index.index, id).takeRetainedValue() as String
 
     public init(index: Index, id: CFIndex) {
         self.index = index
