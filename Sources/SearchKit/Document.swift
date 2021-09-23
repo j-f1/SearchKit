@@ -8,27 +8,31 @@
 import CoreServices
 import Foundation
 
-class Document {
+public class Document {
     let document: SKDocument
 
     public convenience init?(_ url: URL) {
-        self.init(SKDocumentCreateWithURL(url as CFURL)?.takeRetainedValue())
+        self.init(SKDocumentCreateWithURL(url as CFURL))
     }
 
     public convenience init?(scheme: String?, parent: Document? = nil, name: String) {
-        self.init(SKDocumentCreate(scheme as CFString?, parent?.document, name as CFString)?.takeRetainedValue())
+        self.init(SKDocumentCreate(scheme as CFString?, parent?.document, name as CFString))
     }
 
-    private init?(_ document: SKDocument?) {
-        if let document = document {
-            self.document = document
+    private convenience init?(_ document: Unmanaged<SKDocument>?) {
+        if let document = document?.takeRetainedValue() {
+            self.init(document)
         } else {
             return nil
         }
     }
 
+    internal init(_ document: SKDocument) {
+        self.document = document
+    }
+
     var url: URL? { SKDocumentCopyURL(document).takeRetainedValue() as URL? }
     var scheme: String? { SKDocumentGetSchemeName(document).takeUnretainedValue() as String? }
     var name: String? { SKDocumentGetName(document).takeUnretainedValue() as String? }
-    var parent: Document? { Document(SKDocumentGetParent(document)?.takeUnretainedValue()) }
+    var parent: Document? { (SKDocumentGetParent(document)?.takeUnretainedValue()).map(Document.init) }
 }
