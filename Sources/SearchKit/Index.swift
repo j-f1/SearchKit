@@ -67,4 +67,8 @@ public class Index {
     public func numberOfDocuments(containing term: Term) -> Int {
         SKIndexGetTermDocumentCount(index, term.id)
     }
+
+    public func search(for query: String, options: Search.Options = .default) -> Search {
+        Search(index: self, query: query, options: options)
+    }
 }
