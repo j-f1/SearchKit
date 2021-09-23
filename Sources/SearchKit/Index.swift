@@ -23,7 +23,7 @@ public extension SKIndexType {
 }
 
 class Index {
-    internal let index: SKIndex
+    public let index: SKIndex
 
     public private(set) lazy var type = SKIndexGetIndexType(index)
 

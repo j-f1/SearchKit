@@ -9,7 +9,7 @@ import CoreServices
 import Foundation
 
 public class Document {
-    let document: SKDocument
+    public let document: SKDocument
 
     public convenience init?(_ url: URL) {
         self.init(SKDocumentCreateWithURL(url as CFURL))
