@@ -7,7 +7,7 @@ final class DocumentTests: XCTestCase {
         // Use XCTAssert and related functions to verify your tests produce the correct
         // results.
         let url = URL(string: "https://example.com")!
-        guard let document = Document(url) else { return XCTFail("nil document") }
+        guard let document = Document(url: url) else { return XCTFail("nil document") }
         XCTAssertEqual(document.url, url)
         XCTAssertEqual(document.scheme, "https")
         XCTAssertEqual(document.name, "example.com")
@@ -24,7 +24,7 @@ final class DocumentTests: XCTestCase {
 
     func testDocumentCFRepresentation() throws {
         let url = URL(string: "https://example.com")!
-        guard let document = Document(url) else { return XCTFail("nil document") }
+        guard let document = Document(url: url) else { return XCTFail("nil document") }
         XCTAssertEqual(CFGetTypeID(document.document), SKDocumentGetTypeID())
     }
 }

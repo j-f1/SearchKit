@@ -25,12 +25,20 @@ class WriteableIndex: Index {
         WriteableIndex(retained: SKIndexOpenWithURL(fileURL as CFURL, name as CFString?, true))
     }
 
-    public func add(_ document: Document, text: String?, overwrite: Bool) -> Bool {
-        SKIndexAddDocumentWithText(index, document.document, text as CFString?, overwrite)
+    public func add(_ document: Document, text: String?) -> Bool {
+        SKIndexAddDocumentWithText(index, document.document, text as CFString?, false)
     }
 
-    public func add(fileDocument document: Document, mimeTypeHint: String? = nil, overwrite: Bool) -> Bool {
-        SKIndexAddDocument(index, document.document, mimeTypeHint as CFString?, overwrite)
+    public func add(fileDocument document: Document, mimeTypeHint: String? = nil) -> Bool {
+        SKIndexAddDocument(index, document.document, mimeTypeHint as CFString?, false)
+    }
+
+    public func update(_ document: Document, text: String?) -> Bool {
+        SKIndexAddDocumentWithText(index, document.document, text as CFString?, true)
+    }
+
+    public func update(fileDocument document: Document, mimeTypeHint: String? = nil) -> Bool {
+        SKIndexAddDocument(index, document.document, mimeTypeHint as CFString?, true)
     }
 
     public func flush() {

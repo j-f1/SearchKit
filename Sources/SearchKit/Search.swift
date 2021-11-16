@@ -23,7 +23,7 @@ public class Search {
 
     public typealias Match = (id: Document, score: Float)
 
-    public func findMatches(maximumCount: Int = 0, maximumTime: TimeInterval) -> (matches: [Match], hasMore: Bool) {
+    public func findMatches(maximumCount: Int, maximumTime: TimeInterval) -> (matches: [Match], hasMore: Bool) {
         let count = maximumCount == 0 ? index.documentCount : maximumCount
         var documentIDs = Array<SKDocumentID>(repeating: 0, count: count)
         var scores = Array<Float>(repeating: 0, count: count)
@@ -42,7 +42,7 @@ public class Search {
         var done = false
         var matches = [Match]()
         while !done {
-            let (newMatches, hasMore) = findMatches(maximumTime: maximumTime)
+            let (newMatches, hasMore) = findMatches(maximumCount: 1000, maximumTime: maximumTime)
             matches.append(contentsOf: newMatches)
             done = !hasMore
         }

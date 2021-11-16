@@ -18,7 +18,7 @@ public class Document {
         storage = nil
     }
 
-    public convenience init?(_ url: URL) {
+    public convenience init?(url: URL) {
         self.init(retained: SKDocumentCreateWithURL(url as CFURL))
     }
 

@@ -13,11 +13,11 @@ public class Index {
 
     public private(set) lazy var type = SKIndexGetIndexType(index)
 
-    public convenience init?(data: Data, named name: String? = nil) {
+    public convenience init?(data: Data, indexName name: String? = nil) {
         self.init(retained: SKIndexOpenWithData(data as CFData, name as CFString?))
     }
 
-    public convenience init?(url: URL, named name: String? = nil) {
+    public convenience init?(fileURL url: URL, indexName name: String? = nil) {
         self.init(retained: SKIndexOpenWithURL(url as CFURL, name as CFString?, false))
     }
 
@@ -27,10 +27,6 @@ public class Index {
         } else {
             return nil
         }
-    }
-
-    deinit {
-        SKIndexClose(index)
     }
 
     public var documentCount: Int { SKIndexGetDocumentCount(index) }
